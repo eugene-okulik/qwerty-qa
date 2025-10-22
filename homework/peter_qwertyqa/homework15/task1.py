@@ -50,7 +50,7 @@ task4_values = [
 ]
 cursor.executemany(task4_query, task4_values)
 # lastrowid return id of the first entered row
-subject_ids = [cursor.lastrowid, cursor.lastrowid+1]
+subject_ids = [cursor.lastrowid, cursor.lastrowid + 1]
 # print(subject_ids)
 
 # --------------- task 5 ---------------------
