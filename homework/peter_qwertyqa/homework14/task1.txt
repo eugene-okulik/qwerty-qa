@@ -1,0 +1,64 @@
+-- 1. Создайте студента (student)
+INSERT INTO students (name, second_name) VALUES ('Ivan', 'Qwert')
+
+-- 2. Cоздайте несколько книг (books) и укажите, что ваш созданный студент взял их
+
+-- Try 2 different ways of INSERT for practise purpose
+INSERT INTO books (title, taken_by_student_id)
+SELECT 'Testing is easy', id FROM students WHERE second_name = 'qwe-12'
+
+INSERT INTO books (title, taken_by_student_id)
+VALUES ('Testing is hard', (SELECT id FROM students WHERE second_name = 'qwe-12'))
+
+-- 3. Создайте группу (group) и определите своего студента туда
+
+-- создать группу
+INSERT INTO `groups` (title, start_date, end_date) VALUES ('Super test 12', 'sep 25', 'dec 26')
+-- определить туда студента
+UPDATE students SET group_id = (SELECT id FROM `groups` WHERE title = 'Super test 12')
+WHERE second_name = 'qwe-12'
+
+-- 4. Создайте несколько учебных предметов (subjects)
+
+INSERT INTO subjects (title) VALUES ('QA Theory qwe-12'), ('QA Practice qwe-12')
+
+-- 5. Создайте по два занятия для каждого предмета (lessons)
+
+INSERT INTO lessons (title, subject_id) VALUES
+('lesson 1', (SELECT id FROM subjects WHERE title = 'QA Theory qwe-12')),
+('lesson 2', (SELECT id FROM subjects WHERE title = 'QA Theory qwe-12')),
+('lesson 1 p', (SELECT id FROM subjects WHERE title = 'QA Practice qwe-12')),
+('lesson 2 p', (SELECT id FROM subjects WHERE title = 'QA Practice qwe-12'));
+
+-- 6. Поставьте своему студенту оценки (marks) для всех созданных вами занятий
+
+-- тут не буду использовать select для увеличения читаемости запроса
+INSERT INTO marks (value, lesson_id, student_id) VALUES
+(5, 25103, 21593),
+(10, 25102, 21593),
+(7, 25101, 21593),
+(0, 25101, 21593)
+
+
+-- Вывести все оценки студента
+SELECT value AS 'marks' FROM marks WHERE student_id = (SELECT id FROM students WHERE second_name = 'qwe-12')
+
+-- Вывести все книги, которые находятся у студента
+SELECT title FROM books WHERE taken_by_student_id = (SELECT id FROM students WHERE second_name = 'qwe-12')
+
+-- Для вашего студента выведите всё, что о нем есть в базе:
+-- группа, книги, оценки с названиями занятий и предметов (всё одним запросом с использованием Join)
+
+SELECT s.name, s.second_name,
+g.title as 'group_name', -- g.start_date, g.end_date,
+b.title as 'book_title',
+m.value as 'mark_value',
+l.title as 'lesson_title',
+s2.title as 'subject_name'
+FROM students s
+JOIN `groups` g ON s.group_id = g.id
+JOIN books b ON s.id = b.taken_by_student_id
+JOIN marks m ON m.student_id = s.id
+JOIN lessons l ON l.id = m.lesson_id
+JOIN subjects s2 ON s2.id = l.subject_id
+WHERE s.second_name = 'qwe-12'
