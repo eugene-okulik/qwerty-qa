@@ -12,7 +12,7 @@ cursor = db.cursor(dictionary=True)
 
 # --------------- task 1 ---------------------
 task1_query = "INSERT INTO students (name, second_name) VALUES (%s, %s)"
-cursor.execute(task1_query, ('Gleb', 'Taskov 3'))
+cursor.execute(task1_query, ('Gleb', 'Taskov 4'))
 student_id = cursor.lastrowid
 # print(student_id)
 
@@ -48,9 +48,12 @@ task4_values = [
     ('QA Subject 222',),
     ('QA Subject 333',)
 ]
-cursor.executemany(task4_query, task4_values)
-# lastrowid return id of the first entered row
-subject_ids = [cursor.lastrowid, cursor.lastrowid + 1]
+subject_ids = []
+
+for value in task4_values:
+    cursor.execute(task4_query, value)
+    subject_ids.append(cursor.lastrowid)
+
 # print(subject_ids)
 
 # --------------- task 5 ---------------------
@@ -63,8 +66,11 @@ task5_values = [
     ('QA Subject 333', subject_ids[1]),
     ('QA Subject 444', subject_ids[1])
 ]
-cursor.executemany(task5_query, task5_values)
-lessons_id = [cursor.lastrowid + i for i in range(len(task5_values))]
+lessons_id = []
+
+for value in task5_values:
+    cursor.execute(task5_query, value)
+    lessons_id.append(cursor.lastrowid)
 
 # --------------- task 6 ---------------------
 task6_query = '''
