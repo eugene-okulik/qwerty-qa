@@ -21,27 +21,21 @@ def file_split_to_timestamps(file_s):
                 # получим сам таймстамп в формате datetime
                 cur_ts = datetime.strptime(timestamp_match.group(),
                                            "%Y-%m-%d %H:%M:%S.%f")
-                # вставляем до конца строки, тк знаем,
-                # что новый таймстамп только с новой строки может быть
-                res[cur_ts].append(line[timestamp_match.end()+1:])
-            else:
-                # если найти таймстамп не удалось,
-                # добавляем строку в конец последнего таймстампа
-                res[cur_ts].append(line)
+            res[cur_ts].append(line)
 
     result = {}
-    for k, v in res.items():
-        result[k] = ''.join(v)
+    for key, value in res.items():
+        result[key] = ''.join(value)
     return result
 
 
 def find_word_neighbors(text, words):
-    k = 0
+    count = 0
     for word in words:
-        k += 1
+        count += 1
         if text in word:
-            pos_min = max(k - 5, 0)
-            pos_max = min(k + 5, len(words))
+            pos_min = max(count - 5, 0)
+            pos_max = min(count + 5, len(words))
             res = ""
             for i in range(pos_min, pos_max):
                 res += (words[i] + ' ')
@@ -61,11 +55,6 @@ path, text_to_find = args.path, args.text
 
 files = []
 
-# If search text argument was not set, raise the ValueError
-if text_to_find is None:
-    raise ValueError("Search text cannot be empty. "
-                     "Please use --text to enter the search text")
-
 # /Users/bkh/test/qwerty-qa/homework/eugene_okulik/data/logs
 # Check if the path exists and if its file or a directory
 if os.path.isfile(path):
@@ -78,6 +67,11 @@ elif os.path.isdir(path):
 else:
     # print("Path not found.")
     raise ValueError("Path not found.")
+
+# If search text argument was not set, raise the ValueError
+if text_to_find is None:
+    raise ValueError("Search text cannot be empty. "
+                     "Please use --text to enter the search text")
 
 
 # Check if the directory is not empty
