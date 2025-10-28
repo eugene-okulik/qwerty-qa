@@ -9,6 +9,7 @@ def get_object(id_obj):
     res = requests.get(url=f'{url}/{str(id_obj)}').json()
     return res
 
+
 @pytest.fixture(scope='session')
 def start_end():
     print("\nStart testing")
